@@ -20,16 +20,18 @@ window.addEventListener("load", () => {
     e.preventDefault();
     let [x, y] = (!isMobile) ? [e.pageX, e.pageY] : [e.targetTouches[0].pageX, e.targetTouches[0].pageY];
     drawDot(x, y);
-    let diff = 2;
+    let radius = 2;
+    let getX = () => x + radius * Math.sin(getRandomInt(0, 360));
+    let getY = () => y + radius * Math.cos(getRandomInt(0, 360));
     let interval = setInterval(() => {
-      diff += getRandomInt(1,10);
-      let sign = (Math.random()>0.5?1:-1);
-      drawDot(sign*(x+diff), sign*(y+diff));
-    }, 50);
+      if (Math.random()>0.5) return; // skips somtimes
+      radius = getRandomInt(10, 50);
+      drawDot(getX(), getY());
+    }, 15);
     (!isMobile) ? onmouseup = () => {clearInterval(interval);} : ontouchend = () => {clearInterval(interval);};
   }
 
   document.addEventListener('mousedown', handleTouch, {passive: false});
   document.addEventListener('touchstart', (e) => handleTouch(e, true), {passive: false});
-  // ontouchstart = (e) => handleTouch(e, true);
+  // ontouchstart = (e) => handleTouch(e, true); // doesn't work if you want to get rid of auto text-select on safari (via e.preventDefault())
 });
