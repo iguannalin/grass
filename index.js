@@ -4,9 +4,10 @@ window.addEventListener("load", () => {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
   }
+
   const container = document.getElementById("container");
   const grasses = ["⺌", "丶", "⺍", "灬", "艹"];
-  let touching = false;
+
   function drawDot(x, y) {
     const dot = document.createElement("span");
     dot.innerText = grasses[getRandomInt(0, grasses.length)]; // 
@@ -16,17 +17,19 @@ window.addEventListener("load", () => {
   }
 
   function handleTouch(e, isMobile = false) {
+    e.preventDefault();
     let [x, y] = (!isMobile) ? [e.pageX, e.pageY] : [e.targetTouches[0].pageX, e.targetTouches[0].pageY];
-    if (!touching) drawDot(x, y);
-    touching = true;
-    // while (touching) {
-    //   console.log("touching");
-    //   drawDot(x+=2, y+=2);
-    //   (!isMobile) ? onmouseup = () => {touching = false; console.log({touching});} : ontouchend = () => {touching = false; console.log({touching});};
-    // }
-    console.log({touching});
+    drawDot(x, y);
+    let diff = 2;
+    let interval = setInterval(() => {
+      diff += getRandomInt(1,10);
+      let sign = (Math.random()>0.5?1:-1);
+      drawDot(sign*(x+diff), sign*(y+diff));
+    }, 50);
+    (!isMobile) ? onmouseup = () => {clearInterval(interval);} : ontouchend = () => {clearInterval(interval);};
   }
 
-  onmousedown = (e) => handleTouch(e);
-  ontouchmove = (e) => handleTouch(e, true);
+  document.addEventListener('mousedown', handleTouch, {passive: false});
+  document.addEventListener('touchstart', (e) => handleTouch(e, true), {passive: false});
+  // ontouchstart = (e) => handleTouch(e, true);
 });
