@@ -6,7 +6,7 @@ window.addEventListener("load", () => {
   }
 
   const container = document.getElementById("container");
-  const grasses = ["⺌", "丶", "⺍", "灬", "艹"];
+  const grasses = ["冫", "氵", "⺌", "丶", "⺍", "灬", "艹"];
 
   function drawDot(x, y) {
     const dot = document.createElement("span");
@@ -20,13 +20,14 @@ window.addEventListener("load", () => {
     e.preventDefault();
     let [x, y] = (!isMobile) ? [e.pageX, e.pageY] : [e.targetTouches[0].pageX, e.targetTouches[0].pageY];
     drawDot(x, y);
+    let getX = (s=0,r) => x + r * Math.sin(s);
+    let getY = (c=0,r) => y + r * Math.cos(c);
     let radius = 2;
-    let getX = () => x + radius * Math.sin(getRandomInt(0, 360));
-    let getY = () => y + radius * Math.cos(getRandomInt(0, 360));
+    let s = 0; let c = 0;
     let interval = setInterval(() => {
-      if (Math.random()>0.5) return; // skips somtimes
-      radius = getRandomInt(10, 50);
-      drawDot(getX(), getY());
+      if (Math.random()>0.45) return; // skips sometimes
+      radius = getRandomInt(10, 30);
+      drawDot(getX(s+=1,radius), getY(c+=1,radius));
     }, 15);
     (!isMobile) ? onmouseup = () => {clearInterval(interval);} : ontouchend = () => {clearInterval(interval);};
   }
